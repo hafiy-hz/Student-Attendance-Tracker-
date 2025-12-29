@@ -4,13 +4,13 @@
 // Lecture Class: TC5L
 // Tutorial Class: TT15L
 // Trimester: 2530
-// Member_1: ID | NAME | EMAIL | PHONE
+// Member_1: 252UC242D2 | ADAM SYAFIQ BIN SALLEHUDDIN | ADAM.SYAFIQ.SALLEHUDDIN@STUDENT.MMU.EDU.MY | 012-361 3065
 // Member_2: 252UC242QY | MUHAMMAD HAFIY AL-HAFIIZH BIN JOAHARI | MUHAMMAD.HAFIY.ALHAFIIZH1@STUDENT.MMU.EDU.MY | 016-212 3859
-// Member_3: ID | NAME | EMAIL | PHONE
+// Member_3: 252UC242NE | AIDAN KHALIQ BIN SHAHNAZARUDDIN | AIDAN.KHALIQ.SHAHNZARUDDI1@student.mmu.edu.my | 017-615 5250
 // *********************************************************
 // Task Distribution
 // Member_1:
-// Member_2: Implemented the main program structure, insert.Row.
+// Member_2: Implemented the main program structure, insertRow.
 // Member_3:
 // *********************************************************
 
@@ -44,8 +44,8 @@ void insertRow();
 void viewCSV();
 
 
-bool isNumber(char str[]);
-int convertToInt(char str[]);
+bool isNumber(const string& str);
+int convertToInt(const string& str);
 
 //hafiy
 int main()
@@ -158,7 +158,8 @@ void insertRow()
     {
 
         bool isStatus = (columnNames[i].length() == 6) &&
-                        (columnNames[i][0] == 'S' || columnNames[i][0] == 's');
+                        (columnNames[i][0] == 'S' || columnNames[i][0] == 's') &&
+                        (columnNames[i] == "Status" || columnNames[i] == "status");
 
         if (isStatus)
             cout << "Enter " << columnNames[i] << " (Present: 1, Absent: 0): ";
@@ -167,23 +168,37 @@ void insertRow()
 
         getline(cin, input, '\n');
 
+        string lowerColName = "";
+        for (char& c : columnNames[i]) {
+            lowerColName += tolower(c);
+        }
 
-        if (columnTypes[i] == 0)
+        bool enforceInt = (columnTypes[i] == 0) || (lowerColName == "studentid") || (lowerColName == "student id");
+
+        if (enforceInt)
         {
             if (isNumber(input))
             {
-                intCells[numRows][i] = convertToInt(input);
+                if (columnTypes[i] == 0) 
+                {
+                    intCells[numRows][i] = convertToInt(input);
+                } 
+                else 
+                {
+                    textCells[numRows][i] = input;
+                }
             }
             else
             {
                 cout << "Error: Invalid INT value. Please enter a number." << endl;
-                i--;
+                i--; 
             }
         }
         else
         {
             textCells[numRows][i] = input; 
         }
+
     }
 
     numRows++;
@@ -224,7 +239,7 @@ void createSheet(string name)
     numRows = 0;
 }
 
-bool isNumber(string str)
+bool isNumber(const string& str)
 {
     int len = str.length();
     if (len == 0)
@@ -269,7 +284,7 @@ void getColumnInfo(int colIndex)
     getline(cin, input, '\n');
 
     int parenPos = -1;
-    for (i = 0; input[i] != '\0'; i++)
+    for (i = 0; i < (int)input.length(); i++)
     {
         if (input[i] == '(')
         {
@@ -280,12 +295,16 @@ void getColumnInfo(int colIndex)
 
     if (parenPos >= 0)
     {
-        for (i = 0; i < parenPos; i++)
-            name[i] = input[i];
+       
+        name = input.substr(0, parenPos); 
 
-        name[i] = '\0';
+        
+        while(name.length() > 0 && name.back() == ' ') {
+            name.pop_back();
+        }
 
-        for (i = parenPos; input[i] != '\0'; i++)
+        
+        for (i = parenPos; i < (int)input.length(); i++)
         {
             if ((input[i] == 'I' || input[i] == 'i') &&
                 (input[i + 1] == 'N' || input[i + 1] == 'n') &&
@@ -300,7 +319,6 @@ void getColumnInfo(int colIndex)
     {
         name = input;
     }
-
     columnNames[colIndex] = name;
     columnTypes[colIndex] = type;
 }
