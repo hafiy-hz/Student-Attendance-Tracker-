@@ -1,48 +1,66 @@
-// Milestone 1
+// *********************************************************
+// Program: AttendanceTracker.cpp
+// Course: CCP6114 Programming Fundamentals
+// Lecture Class: TC5L
+// Tutorial Class: TT15L
+// Trimester: 2530
+// Member_1: ID | NAME | EMAIL | PHONE
+// Member_2: 252UC242QY | MUHAMMAD HAFIY AL-HAFIIZH BIN JOAHARI | MUHAMMAD.HAFIY.ALHAFIIZH1@STUDENT.MMU.EDU.MY | 016-212 3859
+// Member_3: ID | NAME | EMAIL | PHONE
+// *********************************************************
+// Task Distribution
+// Member_1:
+// Member_2: Implemented the main program structure, insert.Row.
+// Member_3:
+// *********************************************************
+
 
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <string>
+#include <cctype>
 
 using namespace std;
 
+
+//constants 
 const int MAX_COLUMNS = 10;
 const int MAX_ROWS = 100;
-const int MAX_NAME_LENGHT = 100;
 
-char sheetName[60];
-char columnNames[10][60];
-char textCells[100][10][60];
-int columnTypes[10];
-int intCells[100][10];
+// variables
+string sheetName;
+string columnNames[MAX_COLUMNS];
+string textCells[MAX_ROWS][MAX_COLUMNS];
+int columnTypes[MAX_COLUMNS]; 
+int intCells[MAX_ROWS][MAX_COLUMNS];
 int numColumns = 0;
 int numRows = 0;
 
 // function
-void createSheet(char name[]);
+void createSheet(string name);
 void getColumnInfo(int colIndex);
 void insertRow();
 void viewCSV();
-void copyString(char dest[], char source[]);
-int stringLength(char str[]);
+
+
 bool isNumber(char str[]);
 int convertToInt(char str[]);
 
-//fiy
+//hafiy
 int main()
 {
-    char input[51];
+    string input;
     int numCols;
     char continueInsert;
     int i;
 
-    cout << "===========================================\n";
-    cout << "   STUDENT ATTENDANCE TRACKER - MILESTONE 1\n";
-    cout << "===========================================\n\n";
+    cout << "=================================\n";
+    cout << "   STUDENT ATTENDANCE TRACKER    \n";
+    cout << "=================================\n\n";
 
     cout << "Enter Attendance sheet name: ";
-    cin.getline(input, 50);
+    getline(cin, input);
     createSheet(input);
 
     cout << "Attendance sheet \"" << input << "\" created successfully." << endl;
@@ -74,11 +92,12 @@ int main()
 
     cout << "Sheet structure created successfully." << endl;
 
+
     continueInsert = 'y';
     while (continueInsert == 'y' || continueInsert == 'Y')
     {
         cout << "------------------------" << endl;
-        cout << "Insert new attendace row" << endl;
+        cout << "Insert New Attendance Row" << endl;
         cout << "------------------------" << endl;
 
         insertRow();
@@ -94,14 +113,16 @@ int main()
     cout << "View attendance sheet" << endl;
     cout << "---------------------" << endl;
 
+
+
     viewCSV();
     cout << endl;
 
     cout << "-------------------------" << endl;
     cout << "Basic Error Handling Demo" << endl;
     cout << "-------------------------" << endl;
-    cout << "Enter StudentID: ";
-    cin.getline(input, 50);
+    cout << "Enter StudentID: "; // this  to  test  the  validity  of  the  integer  input
+    getline(cin, input);
 
     if (isNumber(input))
     {
@@ -114,15 +135,15 @@ int main()
     }
 
     cout << endl;
-    cout << "-------------------------" << endl;
-    cout << "End of Milestone 1 Output" << endl;
-    cout << "-------------------------" << endl;
+    cout << "-------------------" << endl;
+    cout << "End of Milestone 1 " << endl;
+    cout << "-------------------" << endl;
 
     return 0;
 }
 
 
-//fiy
+//hafiy
 void insertRow()
 {
     if (numRows >= MAX_ROWS)
@@ -131,12 +152,12 @@ void insertRow()
         return;
     }
 
-    char input[51];
+    string input;
 
     for (int i = 0; i < numColumns; i++)
     {
-        int len = stringLength(columnNames[i]);
-        bool isStatus = (len == 6) &&
+
+        bool isStatus = (columnNames[i].length() == 6) &&
                         (columnNames[i][0] == 'S' || columnNames[i][0] == 's');
 
         if (isStatus)
@@ -144,7 +165,8 @@ void insertRow()
         else
             cout << "Enter " << columnNames[i] << ": ";
 
-        cin.getline(input, 50);
+        getline(cin, input, '\n');
+
 
         if (columnTypes[i] == 0)
         {
@@ -160,7 +182,7 @@ void insertRow()
         }
         else
         {
-            copyString(textCells[numRows][i], input);
+            textCells[numRows][i] = input; 
         }
     }
 
@@ -194,35 +216,17 @@ void viewCSV()
     }
 }
 
-void copyString(char dest[], char source[])
-{
-    int i = 0;
-    while (source[i] != '\0')
-    {
-        dest[i] = source[i];
-        i++;
-    }
-    dest[i] = '\0';
-}
 
-int stringLength(char str[])
+void createSheet(string name)
 {
-    int len = 0;
-    while (str[len] != '\0')
-        len++;
-    return len;
-}
-
-void createSheet(char name[])
-{
-    copyString(sheetName, name);
+    sheetName = name;
     numColumns = 0;
     numRows = 0;
 }
 
-bool isNumber(char str[])
+bool isNumber(string str)
 {
-    int len = stringLength(str);
+    int len = str.length();
     if (len == 0)
         return false;
 
@@ -242,33 +246,27 @@ bool isNumber(char str[])
     return true;
 }
 
-int convertToInt(char str[])
+int convertToInt(const string& str)
 {
-    int result = 0;
-    int sign = 1;
-    int start = 0;
-
-    if (str[0] == '-')
-    {
-        sign = -1;
-        start = 1;
+    try{
+        return stoi(str);
+    }
+    catch (const invalid_argument&){
+        return 0; //  handle error 
     }
 
-    for (int i = start; str[i] != '\0'; i++)
-        result = result * 10 + (str[i] - '0');
-
-    return result * sign;
 }
+  
 
 void getColumnInfo(int colIndex)
 {
-    char input[51];
-    char name[51];
+    string input;
+    string name;
     int type = 1;
     int i;
 
     cout << "Enter column " << (colIndex + 1) << " name: ";
-    cin.getline(input, 50);
+    getline(cin, input, '\n');
 
     int parenPos = -1;
     for (i = 0; input[i] != '\0'; i++)
@@ -300,9 +298,10 @@ void getColumnInfo(int colIndex)
     }
     else
     {
-        copyString(name, input);
+        name = input;
     }
 
-    copyString(columnNames[colIndex], name);
+    columnNames[colIndex] = name;
     columnTypes[colIndex] = type;
 }
+
