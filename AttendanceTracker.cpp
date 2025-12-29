@@ -90,7 +90,7 @@ int main()
         getColumnInfo(i);
     }
 
-    cout << "Sheet structure created successfully." << endl;
+    cout << "Sheet structure successfully." << endl;
 
 
     continueInsert = 'y';
