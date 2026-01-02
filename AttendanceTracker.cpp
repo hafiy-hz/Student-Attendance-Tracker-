@@ -41,7 +41,7 @@ int numRows = 0;
 void createSheet(string name);
 void getColumnInfo(int colIndex);
 void insertRow();
-void viewCSV();
+void ViewCSV();
 
 
 bool isNumber(const string& str);
@@ -115,7 +115,7 @@ int main()
 
 
 
-    viewCSV();
+    ViewCSV();
     cout << endl;
 
     cout << "-------------------------" << endl;
@@ -205,8 +205,10 @@ void insertRow()
     cout << "Row inserted successfully." << endl;
 }
 
-void viewCSV()
+//AdamSyafiq
+void ViewCSV()
 {
+    //For printing the column headers
     for (int i = 0; i < numColumns; i++)
     {
         cout << columnNames[i];
@@ -215,15 +217,19 @@ void viewCSV()
     }
     cout << endl;
 
+    //For printing rows
     for (int i = 0; i < numRows; i++)
     {
         for (int j = 0; j < numColumns; j++)
         {
             if (columnTypes[j] == 0)
+            {
                 cout << intCells[i][j];
+            }
             else
+            {
                 cout << textCells[i][j];
-
+            }
             if (j < numColumns - 1)
                 cout << ", ";
         }
